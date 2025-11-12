@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mr. Yosel Rai - Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    /* Base Styles */
+    :root {
+      --cyan: #06b6d4;
+      --cyan-light: #22d3ee;
+      --gray-800: #1f2937;
+      --gray-700: #374151;
+      --gray-300: #d1d5db;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      background-color: #000;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><path d='M0 0h400v400H0z' fill='black'/><g fill='none' stroke='rgb(50,50,50)' stroke-width='1'><circle cx='100' cy='100' r='60'/><circle cx='300' cy='300' r='60'/><path d='M200 0v400M0 200h400'/><path d='M0 0l400 400M400 0L0 400'/></g></svg>");
+      background-size: 200px 200px;
+      background-repeat: repeat;
+      background-attachment: fixed;
+    }
+
+    /* Navigation Styles */
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: var(--cyan);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hamburger Menu Styles */
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      width: 30px;
+      height: 20px;
+      position: relative;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hamburger span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background-color: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: translateY(8.5px) rotate(45deg);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: translateY(-8.5px) rotate(-45deg);
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 2rem;
+    }
+
+    /* Mobile Navigation */
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 100px;
+        transition: right 0.5s ease;
+        z-index: 40;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-menu.active {
+        right: 0;
+      }
+
+      .nav-link {
+        font-size: 1.2rem;
+        padding: 1rem 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 35;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+      }
+
+      .overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Adjust navbar for mobile */
+      .navbar {
+        padding: 0.75rem 1rem;
+      }
+
+      .navbar .download-btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+      }
+    }
+
+    /* Section Animations */
+    section {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Staggered animations for sections */
+    #home { animation-delay: 0.1s; }
+    #about { animation-delay: 0.2s; }
+    #education { animation-delay: 0.3s; }
+    #skills { animation-delay: 0.4s; }
+    #projects { animation-delay: 0.5s; }
+    #contact { animation-delay: 0.6s; }
+
+    /* Skill Card Animations */
+    .skill-card {
+      opacity: 0;
+      transform: scale(0.9);
+      animation: fadeInScale 0.6s ease forwards;
+    }
+
+    .skill-card:nth-child(1) { animation-delay: 0.3s; }
+    .skill-card:nth-child(2) { animation-delay: 0.4s; }
+    .skill-card:nth-child(3) { animation-delay: 0.5s; }
+    .skill-card:nth-child(4) { animation-delay: 0.6s; }
+    .skill-card:nth-child(5) { animation-delay: 0.7s; }
+    .skill-card:nth-child(6) { animation-delay: 0.8s; }
+    .skill-card:nth-child(7) { animation-delay: 0.9s; }
+    .skill-card:nth-child(8) { animation-delay: 1.0s; }
+
+    @keyframes fadeInScale {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Project Filter System with CSS Only - FIXED */
+    .filter-input {
+      display: none;
+    }
+
+    .filter-label {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    /* Fix for filter button states */
+    #filter-all:checked ~ .filter-container .filter-label[for="filter-all"],
+    #filter-web:checked ~ .filter-container .filter-label[for="filter-web"],
+    #filter-mobile:checked ~ .filter-container .filter-label[for="filter-mobile"],
+    #filter-uiux:checked ~ .filter-container .filter-label[for="filter-uiux"],
+    #filter-fullstack:checked ~ .filter-container .filter-label[for="filter-fullstack"] {
+      background-color: var(--cyan);
+      color: #000;
+    }
+
+    /* Project Filtering with CSS - FIXED */
+    /* Default state - show all projects */
+    .project-card {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    /* When a filter is selected, hide non-matching projects */
+    #filter-web:checked ~ .projects-container .project-card:not([data-category*="web"]) {
+      display: none;
+    }
+
+    #filter-mobile:checked ~ .projects-container .project-card:not([data-category*="mobile"]) {
+      display: none;
+    }
+
+    #filter-uiux:checked ~ .projects-container .project-card:not([data-category*="uiux"]) {
+      display: none;
+    }
+
+    #filter-fullstack:checked ~ .projects-container .project-card:not([data-category*="fullstack"]) {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Project Card Animations */
+    .project-card {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .project-card:nth-child(1) { animation-delay: 0.3s; }
+    .project-card:nth-child(2) { animation-delay: 0.4s; }
+    .project-card:nth-child(3) { animation-delay: 0.5s; }
+    .project-card:nth-child(4) { animation-delay: 0.6s; }
+    .project-card:nth-child(5) { animation-delay: 0.7s; }
+    .project-card:nth-child(6) { animation-delay: 0.8s; }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+    }
+
+    /* Progress Bar Animation */
+    .progress-bar {
+      animation: growWidth 1.5s ease-in-out forwards;
+    }
+
+    @keyframes growWidth {
+      from { width: 0%; }
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--gray-800);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--cyan);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--cyan-light);
+    }
+  </style>
+</head>
+<body class="text-white font-sans">
+
+  <!-- Centered Rounded Navbar -->
+  <div class="navbar fixed top-6 left-1/2 transform -translate-x-1/2 w-[90%] md:w-[80%] lg:w-[70%] bg-black/50 backdrop-blur-md border border-gray-800 rounded-full flex items-center justify-between px-6 py-3 z-50">
+    
+    <!-- Download Button -->
+    <a href="#contact" class="download-btn bg-black text-white px-6 py-2 rounded-full border border-gray-700 hover:bg-gray-900 transition duration-200 text-sm">
+      Download Profile
+    </a>
+
+    <!-- Navigation Links -->
+    <div class="nav-menu" id="navMenu">
+      <a href="#home" class="nav-link hover:text-cyan-400 transition">Home</a>
+      <a href="#about" class="nav-link hover:text-cyan-400 transition">About</a>
+      <a href="#education" class="nav-link hover:text-cyan-400 transition">Education & Certifications</a>
+      <a href="#skills" class="nav-link hover:text-cyan-400 transition">Skills</a>
+      <a href="#projects" class="nav-link hover:text-cyan-400 transition">Projects</a>
+      <a href="#contact" class="nav-link hover:text-cyan-400 transition">Contact</a>
+    </div>
+
+    <!-- Hamburger Menu -->
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- Overlay for mobile menu -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Hero Section -->
+  <section id="home" class="min-h-screen flex items-center justify-center relative">
+    <div class="absolute inset-0 bg-black/70"></div>
+
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between w-full px-8 pt-32 md:pt-0 relative z-10">
+      
+      <!-- Left Text Section -->
+      <div class="text-center md:text-left space-y-4 md:w-1/2">
+        <h3 class="text-gray-500 font-semibold tracking-wide">MR.</h3>
+        <h1 class="text-4xl md:text-5xl font-bold">YOSEL RAI</h1>
+        <p class="text-cyan-400 text-lg md:text-xl font-mono">Software Engineer / UI/UX Designer</p>
+        <a href="#contact" class="inline-block mt-6 px-6 py-2 bg-gray-800 border border-gray-600 rounded-lg hover:bg-cyan-500 hover:text-black transition">
+          Hire Me
+        </a>
+
+        <!-- Social Icons -->
+        <div class="flex justify-center md:justify-start space-x-5 mt-8">
+          <a href="#" class="text-xl hover:text-cyan-400 transition"><i class='bx bxl-facebook'></i></a>
+          <a href="#" class="text-xl hover:text-cyan-400 transition"><i class='bx bxl-instagram'></i></a>
+          <a href="#" class="text-xl hover:text-cyan-400 transition"><i class='bx bxl-linkedin'></i></a>
+          <a href="#" class="text-xl hover:text-cyan-400 transition"><i class='bx bxl-github'></i></a>
+        </div>
+      </div>
+
+      <!-- Right Image Section -->
+      <div class="mt-12 md:mt-0 md:w-1/2 flex justify-center">
+        <div class="w-64 h-64 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-gray-600 shadow-xl hover:scale-105 transition-transform duration-300">
+          <img src="2copy.jpeg" alt="Yosel Rai" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="min-h-screen py-20 flex items-center relative">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="max-w-4xl mx-auto px-8 relative z-10">
+      <h2 class="text-3xl font-bold text-center mb-12 text-cyan-400">About Me</h2>
+      
+      <div class="bg-black/50 border border-gray-800 rounded-2xl p-8 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+        <p class="text-gray-300 text-lg leading-relaxed mb-6">
+           I'm <span class="text-cyan-400 font-semibold">Yosel Rai</span>, a passionate Software Engineering student at The College of Science and Technology, dedicated to turning ideas into engaging digital experiences. Skilled in Python, HTML, CSS, Figma, Git, and GitHub, I focus on creating responsive, user-centered websites that combine clean design with seamless functionality.
+
+Driven by creativity and innovation, I continuously explore new technologies and design trends to craft solutions that are both functional and visually compelling. To me, coding is more than logic—it's an art form that transforms imagination into meaningful, real-world impact.
+        </p>
+        
+        <p class="text-gray-300 text-lg leading-relaxed">
+          I'm Driven By Creativity and Innovation—A Software Engineering Now Technologies, Experienced working with Google, and Raising Practice That Blend Functionally With Quick Modern Things for Me. Coding isn't just an Art—it's the Azure Cleaning Partner throughout our projects.
+        </p>
+      </div> 
+    </div>
+  </section>
+
+  <!-- Combined Education & Certifications Section -->
+  <section id="education" class="min-h-screen py-20 flex items-center relative">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="max-w-6xl mx-auto px-8 relative z-10">
+      <h2 class="text-3xl font-bold text-center mb-12 text-cyan-400">Education & Certifications</h2>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        
+        <!-- Education Column -->
+        <div class="space-y-6">
+          <h3 class="text-2xl font-bold text-cyan-400 mb-6 text-center">Education</h3>
+          
+          <!-- Education Card 1 -->
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+            <div class="flex items-start space-x-4">
+              <div class="bg-cyan-500/20 p-3 rounded-xl">
+                <i class='bx bxs-graduation text-cyan-400 text-2xl'></i>
+              </div>
+              <div>
+                <div class="text-cyan-400 text-xl font-semibold mb-2">Bachelor of Software Engineering</div>
+                <p class="text-gray-300">Comprehensive education in software development principles, algorithms, and system design.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Education Card 2 -->
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+            <div class="flex items-start space-x-4">
+              <div class="bg-cyan-500/20 p-3 rounded-xl">
+                <i class='bx bxs-certification text-cyan-400 text-2xl'></i>
+              </div>
+              <div>
+                <div class="text-cyan-400 text-xl font-semibold mb-2">National Game Certificate Center</div>
+                <p class="text-gray-300">Specialized certification in game development and interactive media technologies.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certifications Column -->
+        <div class="space-y-6">
+          <h3 class="text-2xl font-bold text-cyan-400 mb-6 text-center">Certifications</h3>
+          
+          <!-- Certification Cards -->
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+            <div class="flex items-start space-x-4">
+              <div class="bg-cyan-500/20 p-3 rounded-xl">
+                <i class='bx bxs-mobile text-cyan-400 text-2xl'></i>
+              </div>
+              <div>
+                <div class="text-cyan-400 font-semibold mb-2">Mobile Development Certification</div>
+                <p class="text-gray-300 text-sm">Phone: 4000-0009</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+            <div class="flex items-start space-x-4">
+              <div class="bg-cyan-500/20 p-3 rounded-xl">
+                <i class='bx bxs-envelope text-cyan-400 text-2xl'></i>
+              </div>
+              <div>
+                <div class="text-cyan-400 font-semibold mb-2">Digital Communication Course</div>
+                <p class="text-gray-300 text-sm">Email: mail@example.com</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+            <div class="flex items-start space-x-4">
+              <div class="bg-cyan-500/20 p-3 rounded-xl">
+                <i class='bx bxs-cog text-cyan-400 text-2xl'></i>
+              </div>
+              <div>
+                <div class="text-cyan-400 font-semibold mb-2">QT Framework Development</div>
+                <p class="text-gray-300 text-sm">QT: 044049-0009-Course</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+            <div class="flex items-start space-x-4">
+              <div class="bg-cyan-500/20 p-3 rounded-xl">
+                <i class='bx bxs-data text-cyan-400 text-2xl'></i>
+              </div>
+              <div>
+                <div class="text-cyan-400 font-semibold mb-2">Advanced Scoring Systems</div>
+                <p class="text-gray-300 text-sm">Subscoring Fundamentals</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section in Card Form -->
+  <section id="skills" class="min-h-screen py-20 flex items-center relative">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="max-w-7xl mx-auto px-8 relative z-10">
+      <h2 class="text-3xl font-bold text-center mb-4 text-cyan-400">Skills & Technologies</h2>
+      <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">Technologies and tools I work with to create amazing digital experiences</p>
+      
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        
+        <!-- Skill Card 2 -->
+        <div class="skill-card bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300 group">
+          <div class="text-center">
+            <div class="bg-cyan-500/20 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class='bx bxl-html5 text-cyan-400 text-3xl'></i>
+            </div>
+            <h3 class="text-cyan-400 font-semibold mb-2">HTML/CSS</h3>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-cyan-400 h-2 rounded-full progress-bar" style="width: 80%"></div>
+            </div>
+            <p class="text-gray-300 text-sm">4+ Months Experience</p>
+          </div>
+        </div>
+
+        <!-- Skill Card 3 -->
+        <div class="skill-card bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300 group">
+          <div class="text-center">
+            <div class="bg-cyan-500/20 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class='bx bxl-php text-cyan-400 text-3xl'></i>
+            </div>
+            <h3 class="text-cyan-400 font-semibold mb-2">PHP</h3>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-cyan-400 h-2 rounded-full progress-bar" style="width: 1.1%"></div>
+            </div>
+            <p class="text-gray-300 text-sm">0+ Years Experience</p>
+          </div>
+        </div>
+
+        <!-- Skill Card 4 -->
+        <div class="skill-card bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300 group">
+          <div class="text-center">
+            <div class="bg-cyan-500/20 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class='bx bxl-javascript text-cyan-400 text-3xl'></i>
+            </div>
+            <h3 class="text-cyan-400 font-semibold mb-2">JavaScript</h3>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-cyan-400 h-2 rounded-full progress-bar" style="width: 1.1%"></div>
+            </div>
+            <p class="text-gray-300 text-sm">0+ Years Experience</p>
+          </div>
+        </div>
+
+        <!-- Skill Card 5 -->
+        <div class="skill-card bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300 group">
+          <div class="text-center">
+            <div class="bg-cyan-500/20 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class='bx bxl-figma text-cyan-400 text-3xl'></i>
+            </div>
+            <h3 class="text-cyan-400 font-semibold mb-2">UI/UX Design</h3>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-cyan-400 h-2 rounded-full progress-bar" style="width: 85%"></div>
+            </div>
+            <p class="text-gray-300 text-sm">4+ Months Experience</p>
+          </div>
+        </div>
+
+        <!-- Skill Card 6 -->
+        <div class="skill-card bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300 group">
+          <div class="text-center">
+            <div class="bg-cyan-500/20 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class='bx bxl-react text-cyan-400 text-3xl'></i>
+            </div>
+            <h3 class="text-cyan-400 font-semibold mb-2">React</h3>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-cyan-400 h-2 rounded-full progress-bar" style="width: 1.1%"></div>
+            </div>
+            <p class="text-gray-300 text-sm">0+ Years Experience</p>
+          </div>
+        </div>
+
+        <!-- Skill Card 7 -->
+        <div class="skill-card bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300 group">
+          <div class="text-center">
+            <div class="bg-cyan-500/20 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class='bx bxl-nodejs text-cyan-400 text-3xl'></i>
+            </div>
+            <h3 class="text-cyan-400 font-semibold mb-2">Node.js</h3>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-cyan-400 h-2 rounded-full progress-bar" style="width: 1.1%"></div>
+            </div>
+            <p class="text-gray-300 text-sm">0+ Years Experience</p>
+          </div>
+        </div>
+
+        <!-- Skill Card 8 -->
+        <div class="skill-card bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300 group">
+          <div class="text-center">
+            <div class="bg-cyan-500/20 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <i class='bx bxl-python text-cyan-400 text-3xl'></i>
+            </div>
+            <h3 class="text-cyan-400 font-semibold mb-2">Python</h3>
+            <div class="w-full bg-gray-700 rounded-full h-2 mb-2">
+              <div class="bg-cyan-400 h-2 rounded-full progress-bar" style="width: 80%"></div>
+            </div>
+            <p class="text-gray-300 text-sm">4+ Months Experience</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="min-h-screen py-20 flex items-center relative">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="max-w-7xl mx-auto px-8 relative z-10 w-full">
+      <h2 class="text-3xl font-bold text-center mb-4 text-cyan-400">My Projects</h2>
+      <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">A showcase of my recent work in software development, UI/UX design, and innovative solutions</p>
+      
+      <!-- Tailwind CSS Only Project Filters - FIXED -->
+      <div class="space-y-8">
+        <!-- Filter Inputs (Hidden) -->
+        <input type="radio" id="filter-all" name="project-filter" class="filter-input" checked>
+        <input type="radio" id="filter-web" name="project-filter" class="filter-input">
+        <input type="radio" id="filter-mobile" name="project-filter" class="filter-input">
+        <input type="radio" id="filter-uiux" name="project-filter" class="filter-input">
+        <input type="radio" id="filter-fullstack" name="project-filter" class="filter-input">
+        
+        <!-- Filter Buttons -->
+        <div class="filter-container flex flex-wrap justify-center gap-4 mb-12">
+          <label for="filter-all" class="filter-label px-6 py-2 bg-cyan-500 text-black rounded-full font-semibold transition-all duration-300 hover:bg-cyan-400">
+            All Projects
+          </label>
+          <label for="filter-web" class="filter-label px-6 py-2 bg-gray-800 border border-gray-700 text-gray-300 rounded-full font-semibold transition-all duration-300 hover:bg-cyan-500 hover:text-black">
+            Web Development
+          </label>
+          <label for="filter-mobile" class="filter-label px-6 py-2 bg-gray-800 border border-gray-700 text-gray-300 rounded-full font-semibold transition-all duration-300 hover:bg-cyan-500 hover:text-black">
+            Mobile Apps
+          </label>
+          <label for="filter-uiux" class="filter-label px-6 py-2 bg-gray-800 border border-gray-700 text-gray-300 rounded-full font-semibold transition-all duration-300 hover:bg-cyan-500 hover:text-black">
+            UI/UX Design
+          </label>
+          <label for="filter-fullstack" class="filter-label px-6 py-2 bg-gray-800 border border-gray-700 text-gray-300 rounded-full font-semibold transition-all duration-300 hover:bg-cyan-500 hover:text-black">
+            Full Stack
+          </label>
+        </div>
+        
+        <!-- Projects Grid -->
+        <div class="projects-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          
+          <!-- Project 1 - E-Commerce Platform -->
+          <div class="project-card group" data-category="web fullstack">
+            <div class="bg-black/50 border border-gray-800 rounded-2xl overflow-hidden backdrop-blur-sm hover:border-cyan-400 transition-all duration-500 h-full flex flex-col">
+              <div class="relative overflow-hidden">
+                <img src="Screenshot 2025-10-05 180812.png" 
+                     alt="E-Commerce Platform" 
+                     class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute top-4 right-4">
+                  <span class="bg-cyan-500 text-black px-3 py-1 rounded-full text-sm font-semibold">Web</span>
+                </div>
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div class="flex space-x-4">
+                    <a href="#" class="bg-cyan-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-cyan-400 transition">
+                      Live Demo
+                    </a>
+                    <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-700 transition">
+                      Source Code
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="p-6 flex-grow">
+                <h3 class="text-xl font-bold text-cyan-400 mb-2">E-Commerce Platform</h3>
+                <p class="text-gray-300 mb-4">A full-featured online shopping platform with payment integration, user authentication, and admin dashboard.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">React</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">Node.js</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">MongoDB</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">Stripe</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 2 - Mobile Fitness App -->
+          <div class="project-card group" data-category="mobile uiux">
+            <div class="bg-black/50 border border-gray-800 rounded-2xl overflow-hidden backdrop-blur-sm hover:border-cyan-400 transition-all duration-500 h-full flex flex-col">
+              <div class="relative overflow-hidden">
+                <img src="Screenshot 2025-10-05 183933.png" 
+                     alt="Food Mobile App" 
+                     class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute top-4 right-4">
+                  <span class="bg-green-500 text-black px-3 py-1 rounded-full text-sm font-semibold">Mobile</span>
+                </div>
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div class="flex space-x-4">
+                    <a href="#" class="bg-cyan-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-cyan-400 transition">
+                      App Store
+                    </a>
+                    <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-700 transition">
+                      Case Study
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="p-6 flex-grow">
+                <h3 class="text-xl font-bold text-cyan-400 mb-2">Food Mobile App</h3>
+                <p class="text-gray-300 mb-4">A fast and reliable food delivery app with real-time tracking and personalized restaurant recommendations.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">React Native</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">Firebase</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">Figma</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">Redux</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project 3 - Dashboard UI -->
+          <div class="project-card group" data-category="uiux web">
+            <div class="bg-black/50 border border-gray-800 rounded-2xl overflow-hidden backdrop-blur-sm hover:border-cyan-400 transition-all duration-500 h-full flex flex-col">
+              <div class="relative overflow-hidden">
+                <img src="Screenshot 2025-10-05 185106.png" 
+                     alt="Personal Web Design" 
+                     class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute top-4 right-4">
+                  <span class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-semibold">UI/UX</span>
+                </div>
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div class="flex space-x-4">
+                    <a href="#" class="bg-cyan-500 text-black px-4 py-2 rounded-lg font-semibold hover:bg-cyan-400 transition">
+                      View Prototype
+                    </a>
+                    <a href="#" class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 hover:bg-gray-700 transition">
+                      Design Files
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="p-6 flex-grow">
+                <h3 class="text-xl font-bold text-cyan-400 mb-2">Personal Web Design</h3>
+                <p class="text-gray-300 mb-4">A modern, responsive website focused on clean UI and intuitive UX to showcase creativity, usability, and seamless user interaction.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">Figma</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">Vue.js</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">D3.js</span>
+                  <span class="bg-gray-800 px-3 py-1 rounded-full text-sm text-gray-300">Sass</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="min-h-screen py-20 flex items-center relative">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="max-w-4xl mx-auto px-8 relative z-10">
+      <h2 class="text-3xl font-bold text-center mb-12 text-cyan-400">Contact Me</h2>
+      
+      <div class="grid md:grid-cols-2 gap-12">
+        <!-- Contact Info -->
+        <div class="space-y-6">
+          <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+            <h3 class="text-xl text-cyan-400 mb-4">Get In Touch</h3>
+            <div class="space-y-4 text-gray-300">
+              <div class="flex items-center space-x-3">
+                <i class='bx bx-phone text-cyan-400 text-xl'></i>
+                <span>17619599</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class='bx bx-envelope text-cyan-400 text-xl'></i>
+                <span>02250381.cst@rub.edu.bt</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <i class='bx bx-map text-cyan-400 text-xl'></i>
+                <span>College of Science and Technology</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contact Form -->
+        <div class="bg-black/50 border border-gray-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400 transition duration-300">
+          <form class="space-y-4">
+            <div>
+              <label class="block text-gray-300 mb-2">Name</label>
+              <input type="text" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition duration-300">
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Email</label>
+              <input type="email" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition duration-300">
+            </div>
+            <div>
+              <label class="block text-gray-300 mb-2">Message</label>
+              <textarea rows="4" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition duration-300"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-cyan-500 text-black font-semibold py-2 rounded-lg hover:bg-cyan-400 transition duration-300">
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-black/80 border-t border-gray-800 py-8">
+    <div class="max-w-6xl mx-auto px-8 text-center text-gray-400">
+      <p>&copy; 2025 Yosel Rai. All rights reserved. | Software Engineer & UI/UX Designer</p>
+    </div>
+  </footer>
+
+  <script>
+    // Hamburger menu functionality
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('navMenu');
+    const overlay = document.getElementById('overlay');
+    
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+    
+    // Close menu when clicking on overlay
+    overlay.addEventListener('click', () => {
+      hamburger.classList.remove('active');
+      navMenu.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+    
+    // Close menu when clicking on a nav link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
